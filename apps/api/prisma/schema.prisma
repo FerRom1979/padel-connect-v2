@@ -1,0 +1,98 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  PLAYER
+  CLUB_ADMIN
+  ADMIN
+}
+
+enum Position {
+  DRIVE
+  REVES
+  BOTH
+}
+
+enum DominantHand {
+  RIGHT
+  LEFT
+}
+
+enum PreferredMatchType {
+  SOCIAL
+  COMPETITIVE
+  BOTH
+}
+
+model City {
+  id        Int      @id @default(autoincrement())
+  name      String
+  province  String
+  country   String
+
+  users User[]
+}
+
+model User {
+  id                   String              @id @default(uuid())
+
+  // Datos de autenticación
+  email                String              @unique
+  password             String
+
+  // Datos personales
+  firstName            String
+  lastName             String
+
+  phone                String?
+
+  birthDate            DateTime?
+
+  cityId Int?
+
+  city   City? @relation(fields: [cityId], references: [id])
+
+  avatar               String?
+
+  bio                  String?
+
+  // Perfil de jugador
+  level                Int?
+
+  position             Position?
+
+  dominantHand         DominantHand?
+
+  preferredMatchType   PreferredMatchType?
+
+  // Redes
+  instagram            String?
+
+  whatsapp             String?
+
+  // Ubicación
+  latitude             Float?
+
+  longitude            Float?
+
+  travelDistanceKm     Int?                @default(20)
+
+  // Estado de la cuenta
+  role                 UserRole            @default(PLAYER)
+
+  emailVerified        Boolean             @default(false)
+
+  profileCompleted     Boolean             @default(false)
+
+  isActive             Boolean             @default(true)
+
+  createdAt            DateTime            @default(now())
+
+  updatedAt            DateTime            @updatedAt
+}
