@@ -10,7 +10,12 @@ import { CompleteProfileDto } from '../dto/complete-profile.dto';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { mapCreateUserData } from '../mappers/create-user.mapper';
-import { userSelect, type UserPublic } from '../types/user-public.type';
+import { userListSelect, type UserList } from '../selects/user-list.select';
+import {
+  userDetailSelect,
+  type UserDetail,
+} from '../selects/user-details.select';
+import { userSelect, type UserPublic } from '../selects/user-public.select';
 
 @Injectable()
 export class UsersService {
@@ -39,17 +44,17 @@ export class UsersService {
     }
   }
 
-  findAll(): Promise<UserPublic[]> {
+  findAll(): Promise<UserList[]> {
     return this.prisma.user.findMany({
-      select: userSelect,
+      select: userListSelect,
       orderBy: { createdAt: 'desc' },
     });
   }
 
-  async findOne(id: string): Promise<UserPublic> {
+  async findOne(id: string): Promise<UserDetail> {
     const user = await this.prisma.user.findUnique({
       where: { id },
-      select: userSelect,
+      select: userDetailSelect,
     });
 
     if (!user) {
@@ -59,10 +64,33 @@ export class UsersService {
     return user;
   }
 
-  update(id: string, updateUserDto: UpdateUserDto) {
-    void updateUserDto;
+  async update(id: string, updateUserDto: UpdateUserDto): Promise<UserPublic> {
+    await this.findOne(id);
 
-    return `This action updates a #${id} user`;
+    const { city, birthDate, ...rest } = updateUserDto;
+    const data: Prisma.UserUncheckedUpdateInput = { ...rest };
+
+    if (birthDate !== undefined) {
+      data.birthDate = new Date(birthDate);
+    }
+
+    if (city !== undefined) {
+      const existingCity = await this.prisma.city.findFirst({
+        where: { name: city },
+      });
+
+      if (!existingCity) {
+        throw new NotFoundException(`City ${city} not found`);
+      }
+
+      data.cityId = existingCity.id;
+    }
+
+    return this.prisma.user.update({
+      where: { id },
+      data,
+      select: userSelect,
+    });
   }
 
   remove(id: string) {
