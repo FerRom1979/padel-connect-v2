@@ -1,9 +1,7 @@
 import { Prisma } from '@prisma/client';
 import { UpdateUserDto } from '../dto/update-user.dto';
 
-export function mapUpdateUserData(
-  dto: UpdateUserDto,
-): Prisma.UserUncheckedUpdateInput {
+export function mapUpdateUserData(dto: UpdateUserDto): Prisma.UserUncheckedUpdateInput {
   return {
     firstName: dto.firstName?.toUpperCase(),
     lastName: dto.lastName?.toUpperCase(),

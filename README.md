@@ -8,23 +8,23 @@ The goal of this project is to create a platform where players can find partners
 
 ### Backend
 
-* NestJS
-* TypeScript
-* Prisma ORM
-* PostgreSQL
-* Swagger API Documentation
+- NestJS
+- TypeScript
+- Prisma ORM
+- PostgreSQL
+- Swagger API Documentation
 
 ### Frontend
 
-* Next.js
-* TypeScript
-* Tailwind CSS
+- Next.js
+- TypeScript
+- Tailwind CSS
 
 ### Infrastructure
 
-* Docker
-* pnpm Workspaces
-* Turborepo
+- Docker
+- pnpm Workspaces
+- Turborepo
 
 ## 📁 Project Structure
 
@@ -45,38 +45,38 @@ padel-connect/
 
 ### User Management
 
-* Create player accounts
-* Secure password hashing
-* Player profile completion
-* Player information:
+- Create player accounts
+- Secure password hashing
+- Player profile completion
+- Player information:
 
-  * Playing level
-  * Position (Drive / Reves / Both)
-  * Dominant hand
-  * Preferred match type
-  * Location
-  * Player preferences
+  - Playing level
+  - Position (Drive / Reves / Both)
+  - Dominant hand
+  - Preferred match type
+  - Location
+  - Player preferences
 
 ### Location Management
 
-* City database
-* Player location relationship
+- City database
+- Player location relationship
 
 ### Backend API
 
-* REST API with NestJS
-* Prisma database integration
-* Swagger documentation
-* DTO validation
-* Clean architecture structure
+- REST API with NestJS
+- Prisma database integration
+- Swagger documentation
+- DTO validation
+- Clean architecture structure
 
 ## 🛠️ Getting Started
 
 ### Requirements
 
-* Node.js >= 20
-* pnpm
-* Docker
+- Node.js >= 20
+- pnpm
+- Docker
 
 ### Installation
 
@@ -138,48 +138,48 @@ http://localhost:3000/docs
 
 ### Authentication
 
-* JWT authentication
-* Login system
-* Refresh tokens
-* Role-based access
+- JWT authentication
+- Login system
+- Refresh tokens
+- Role-based access
 
 ### Players
 
-* Search players nearby
-* Create matches
-* Find missing players
-* Player ratings
+- Search players nearby
+- Create matches
+- Find missing players
+- Player ratings
 
 ### Clubs
 
-* Club registration
-* Court availability management
-* Tournament creation
-* Club dashboard
+- Club registration
+- Court availability management
+- Tournament creation
+- Club dashboard
 
 ### Marketplace
 
-* Merchandise management
-* Product listings
-* Club stores
+- Merchandise management
+- Product listings
+- Club stores
 
 ### Future Features
 
-* Notifications
-* Chat between players
-* Mobile application
-* Payment integration
+- Notifications
+- Chat between players
+- Mobile application
+- Payment integration
 
 ## 🎯 Project Goals
 
 This project is being developed as a real-world full-stack application to improve skills in:
 
-* Backend architecture
-* Database design
-* API development
-* Authentication systems
-* Frontend integration
-* Scalable application design
+- Backend architecture
+- Database design
+- API development
+- Authentication systems
+- Frontend integration
+- Scalable application design
 
 ## 📄 License
 
