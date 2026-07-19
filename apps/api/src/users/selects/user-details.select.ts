@@ -13,6 +13,8 @@ export const userDetailSelect = {
   instagram: true,
   whatsapp: true,
   avatar: true,
+  email: true,
+  role: true,
   city: {
     select: {
       id: true,

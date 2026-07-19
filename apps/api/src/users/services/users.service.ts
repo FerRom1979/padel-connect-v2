@@ -1,4 +1,8 @@
-import { ConflictException, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { hashPassword } from '../../common/utils/hash-password.util';
 import { PrismaService } from '../../prisma/prisma.service';
@@ -7,8 +11,12 @@ import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { mapCreateUserData } from '../mappers/create-user.mapper';
 import { userListSelect, type UserList } from '../selects/user-list.select';
-import { userDetailSelect, type UserDetail } from '../selects/user-details.select';
+import {
+  userDetailSelect,
+  type UserDetail,
+} from '../selects/user-details.select';
 import { userSelect, type UserPublic } from '../selects/user-public.select';
+import { UserAuthSelect, userAuthSelect } from '../selects/user-auth.select';
 
 @Injectable()
 export class UsersService {
@@ -26,7 +34,10 @@ export class UsersService {
 
       return user;
     } catch (error: unknown) {
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === 'P2002'
+      ) {
         throw new ConflictException('Email already registered');
       }
 
@@ -52,6 +63,13 @@ export class UsersService {
     }
 
     return user;
+  }
+
+  async findAuthUserByEmail(email: string): Promise<UserAuthSelect | null> {
+    return this.prisma.user.findUnique({
+      where: { email },
+      select: userAuthSelect,
+    });
   }
 
   async update(id: string, updateUserDto: UpdateUserDto): Promise<UserPublic> {
@@ -87,7 +105,10 @@ export class UsersService {
     return `This action removes a #${id} user`;
   }
 
-  async completeProfile(id: string, dto: CompleteProfileDto): Promise<UserPublic> {
+  async completeProfile(
+    id: string,
+    dto: CompleteProfileDto,
+  ): Promise<UserPublic> {
     const city = await this.prisma.city.findFirst({
       where: {
         name: dto.city,
