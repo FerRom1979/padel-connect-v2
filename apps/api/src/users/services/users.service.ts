@@ -17,6 +17,10 @@ import {
 } from '../selects/user-details.select';
 import { userSelect, type UserPublic } from '../selects/user-public.select';
 import { UserAuthSelect, userAuthSelect } from '../selects/user-auth.select';
+import {
+  UserAuthenticated,
+  userAuthenticatedSelect,
+} from '../selects/user-authenticated.select';
 
 @Injectable()
 export class UsersService {
@@ -69,6 +73,15 @@ export class UsersService {
     return this.prisma.user.findUnique({
       where: { email },
       select: userAuthSelect,
+    });
+  }
+
+  async findForAuthenticationById(
+    id: string,
+  ): Promise<UserAuthenticated | null> {
+    return this.prisma.user.findUnique({
+      where: { id },
+      select: userAuthenticatedSelect,
     });
   }
 
