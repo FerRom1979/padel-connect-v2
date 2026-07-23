@@ -5,6 +5,7 @@ export const userAuthSelect = {
   email: true,
   role: true,
   password: true,
+  isActive: true,
 } satisfies Prisma.UserSelect;
 
 export type UserAuthSelect = Prisma.UserGetPayload<{

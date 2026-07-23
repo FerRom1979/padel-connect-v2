@@ -6,4 +6,6 @@ export class AuthenticatedUserDto {
   email: string;
 
   role: UserRole;
+
+  isActive: boolean;
 }
