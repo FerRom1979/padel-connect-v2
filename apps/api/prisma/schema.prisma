@@ -37,6 +37,8 @@ model City {
   country   String
 
   users User[]
+
+  @@unique([name, province, country])
 }
 
 model User {
