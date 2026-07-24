@@ -21,6 +21,7 @@ import {
   UserAuthenticated,
   userAuthenticatedSelect,
 } from '../selects/user-authenticated.select';
+import { UserProfile, userProfileSelect } from '../selects/user-profile.select';
 
 @Injectable()
 export class UsersService {
@@ -122,20 +123,19 @@ export class UsersService {
     id: string,
     dto: CompleteProfileDto,
   ): Promise<UserPublic> {
-    const city = await this.prisma.city.findFirst({
+    const city = await this.prisma.city.findUnique({
       where: {
-        name: dto.city,
+        id: dto.cityId,
       },
     });
-
     if (!city) {
-      throw new NotFoundException(`City ${dto.city} not found`);
+      throw new NotFoundException(`City ${dto.cityId} not found`);
     }
 
     return this.prisma.user.update({
       where: { id },
       data: {
-        cityId: city.id,
+        cityId: dto.cityId,
         level: dto.level,
         position: dto.position,
         dominantHand: dto.dominantHand,
@@ -151,5 +151,18 @@ export class UsersService {
       },
       select: userSelect,
     });
+  }
+
+  async findProfile(id: string): Promise<UserProfile> {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      select: userProfileSelect,
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User with id ${id} not found`);
+    }
+
+    return user;
   }
 }

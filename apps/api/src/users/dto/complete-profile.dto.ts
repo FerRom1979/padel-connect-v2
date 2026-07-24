@@ -1,18 +1,28 @@
-import { IsEnum, IsInt, IsNumber, IsOptional, IsString, Max, Min } from 'class-validator';
+import {
+  IsEnum,
+  IsInt,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Max,
+  Min,
+} from 'class-validator';
 
 import { DominantHand, Position, PreferredMatchType } from '@prisma/client';
 
 export class CompleteProfileDto {
-  @IsString()
-  city: string;
+  @IsInt()
+  cityId: number;
 
+  @IsOptional()
   @IsInt()
   @Min(1)
   @Max(10)
-  level: number;
+  level?: number;
 
+  @IsOptional()
   @IsEnum(Position)
-  position: Position;
+  position?: Position;
 
   @IsOptional()
   @IsEnum(DominantHand)
