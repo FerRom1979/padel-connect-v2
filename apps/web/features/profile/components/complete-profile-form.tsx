@@ -11,6 +11,10 @@ import { useCompleteProfile } from '../hooks/use-complete-profile';
 import { useState } from 'react';
 import { useCities } from '../hooks/use-cities';
 import { Autocomplete } from '@/components/autocomplete/autocomplete';
+import { Button } from '@/components/ui/button/button';
+import { FormField, Select } from '@/components/ui';
+import { positionOptions } from '../constants/position-options';
+import { levelOptions } from '../constants/level-options';
 
 export function CompleteProfileForm() {
   const [citySearch, setCitySearch] = useState('');
@@ -64,27 +68,32 @@ export function CompleteProfileForm() {
         }}
       />
       {errors.cityId && <span>{errors.cityId?.message}</span>}
-      <select {...form.register('position')}>
-        <option value="">Seleccione una posición</option>
-        <option value="DRIVE">Drive</option>
-        <option value="REVES">Revés</option>
-        <option value="BOTH">Ambas</option>
-      </select>
-      {errors.position?.message && <span>{errors.position?.message}</span>}
-      <select
-        {...form.register('level', {
-          valueAsNumber: true,
-        })}
+      <FormField
+        label="Posición"
+        htmlFor="position"
+        error={errors.position?.message}
       >
-        <option value="2">Principiante</option>
-        <option value="5">Intermedio</option>
-        <option value="8">Competitivo</option>
-        <option value="10">Profesional</option>
-      </select>
+        <Select
+          id="position"
+          placeholder="Seleccione una posición"
+          options={positionOptions}
+          {...form.register('position')}
+        />
+      </FormField>
+      <FormField label="Nivel" htmlFor="level" error={errors.level?.message}>
+        <Select
+          id="level"
+          placeholder="Seleccione un nivel"
+          options={levelOptions}
+          {...form.register('level', {
+            valueAsNumber: true,
+          })}
+        />
+      </FormField>
       {errors.level?.message && <span>{errors.level?.message}</span>}
-      <button type="submit" disabled={completeProfile.isPending}>
+      <Button type="submit" disabled={completeProfile.isPending}>
         {completeProfile.isPending ? 'Ingresando...' : 'Continuar'}
-      </button>
+      </Button>
     </form>
   );
 }

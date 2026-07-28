@@ -7,6 +7,8 @@ import { useRouter } from 'next/navigation';
 import { registerSchema, RegisterFormData } from '../schemas/register.schema';
 
 import { useRegister } from '../hooks/use-register';
+import { Button } from '@/components/ui/button/button';
+import { FormField, Input } from '@/components/ui';
 
 export function RegisterForm() {
   const form = useForm<RegisterFormData>({
@@ -38,32 +40,70 @@ export function RegisterForm() {
 
   return (
     <form onSubmit={form.handleSubmit(onSubmit)}>
-      <input placeholder="Nombre" {...form.register('firstName')} />
-      {errors.firstName && <span>{errors.firstName.message}</span>}
+      <FormField
+        label="Nombre"
+        htmlFor="firstName"
+        error={errors?.firstName?.message}
+      >
+        <Input
+          id="firstName"
+          type="firstName"
+          placeholder="Nombre"
+          {...form.register('firstName')}
+        />
+      </FormField>
 
-      <input placeholder="Apellido" {...form.register('lastName')} />
-      {errors.lastName && <span>{errors.lastName.message}</span>}
+      <FormField
+        label="Apellido"
+        htmlFor="lastName"
+        error={errors?.lastName?.message}
+      >
+        <Input
+          id="lastName"
+          type="lastName"
+          placeholder="Apellido"
+          {...form.register('lastName')}
+        />
+      </FormField>
 
-      <input type="email" placeholder="Email" {...form.register('email')} />
-      {errors.email && <span>{errors.email.message}</span>}
+      <FormField label="Email" htmlFor="email" error={errors?.email?.message}>
+        <Input
+          id="email"
+          type="email"
+          placeholder="Email"
+          {...form.register('email')}
+        />
+      </FormField>
 
-      <input
-        type="password"
-        placeholder="Password"
-        {...form.register('password')}
-      />
-      {errors.password && <span>{errors.password.message}</span>}
+      <FormField
+        label="Password"
+        htmlFor="password"
+        error={errors?.password?.message}
+      >
+        <Input
+          id="password"
+          type="password"
+          placeholder="Password"
+          {...form.register('password')}
+        />
+      </FormField>
 
-      <input
-        type="password"
-        placeholder="Confirmar password"
-        {...form.register('confirmPassword')}
-      />
-      {errors.confirmPassword && <span>{errors.confirmPassword.message}</span>}
+      <FormField
+        label="Confirmar password"
+        htmlFor="confirmPassword"
+        error={errors?.confirmPassword?.message}
+      >
+        <Input
+          id="confirmPassword"
+          type="confirmPassword"
+          placeholder="Confirmar password"
+          {...form.register('confirmPassword')}
+        />
+      </FormField>
 
-      <button type="submit" disabled={register.isPending}>
+      <Button type="submit" disabled={register.isPending}>
         {register.isPending ? 'Creando cuenta...' : 'Registrarse'}
-      </button>
+      </Button>
     </form>
   );
 }
