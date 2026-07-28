@@ -8,8 +8,15 @@ import {
   completeProfileSchema,
 } from '../schemas/complete-profile.schema';
 import { useCompleteProfile } from '../hooks/use-complete-profile';
+import { useState } from 'react';
+import { useCities } from '../hooks/use-cities';
+import { Autocomplete } from '@/components/autocomplete/autocomplete';
 
 export function CompleteProfileForm() {
+  const [citySearch, setCitySearch] = useState('');
+
+  const { data: cities = [], isLoading } = useCities(citySearch);
+
   const form = useForm<CompleteProfileFormData>({
     resolver: zodResolver(completeProfileSchema),
     defaultValues: {
@@ -34,18 +41,28 @@ export function CompleteProfileForm() {
     });
   };
 
+  const cityOptions = cities.map((city) => ({
+    id: city.id,
+    label: city.name,
+  }));
+
   return (
     <form onSubmit={form.handleSubmit(onSubmit)}>
-      <select
-        {...form.register('cityId', {
-          valueAsNumber: true,
-        })}
-      >
-        <option value="">Seleccione una ciudad</option>
-        <option value="1">Lomas de Zamora</option>
-        <option value="2">Lanús</option>
-        <option value="3">Avellaneda</option>
-      </select>
+      <Autocomplete
+        inputValue={citySearch}
+        options={cityOptions}
+        isLoading={isLoading}
+        placeholder="Buscar ciudad..."
+        onInputChange={setCitySearch}
+        onChange={(option) => {
+          form.setValue('cityId', option.id);
+          setCitySearch(option.label);
+        }}
+        onClear={() => {
+          form.setValue('cityId', 0);
+          setCitySearch('');
+        }}
+      />
       {errors.cityId && <span>{errors.cityId?.message}</span>}
       <select {...form.register('position')}>
         <option value="">Seleccione una posición</option>

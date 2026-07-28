@@ -17,3 +17,8 @@ export interface CompleteProfilePayload {
 
   travelDistanceKm?: number;
 }
+
+export interface City {
+  id: number;
+  name: string;
+}
