@@ -6,6 +6,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { loginSchema, LoginFormData } from '../schemas/login.schema';
 import { useLogin } from '../hooks/use-login';
 import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button/button';
+import { Input } from '@/components/ui/input/input';
+import { FormField } from '@/components/ui/form-field/form-field';
 
 export function LoginForm() {
   const form = useForm<LoginFormData>({
@@ -31,14 +34,25 @@ export function LoginForm() {
   };
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)}>
-      <input type="email" {...form.register('email')} />
-      {errors.email && <span>{errors.email?.message}</span>}
-      <input type="password" {...form.register('password')} />
-      {errors.password?.message && <span>{errors.password?.message}</span>}
-      <button type="submit" disabled={login.isPending}>
-        {login.isPending ? 'Ingresando...' : 'Login'}
-      </button>
+    <form onSubmit={form.handleSubmit(onSubmit)} className="ml-4">
+      <FormField label="Email" htmlFor="email" error={errors.email?.message}>
+        <Input
+          id="email"
+          type="email"
+          placeholder="correo@email.com"
+          {...form.register('email')}
+        />
+      </FormField>
+      <FormField
+        label="Contraseña"
+        htmlFor="password"
+        error={errors.password?.message}
+      >
+        <Input id="password" type="password" {...form.register('password')} />
+      </FormField>
+      <Button type="submit" loading={login.isPending}>
+        Ingresar
+      </Button>
     </form>
   );
 }

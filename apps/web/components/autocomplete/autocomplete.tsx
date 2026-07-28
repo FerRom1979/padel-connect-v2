@@ -61,15 +61,9 @@ export function Autocomplete({
         <ul>
           {options.length > 0 ? (
             options.map((option) => (
-              <li
-                key={option.id}
-                onClick={() => {
-                  onChange(option);
-                  setIsOpen(false);
-                }}
-              >
+              <button type="button" onClick={() => onChange(option)}>
                 {option.label}
-              </li>
+              </button>
             ))
           ) : (
             <li>No se encontraron resultados</li>
