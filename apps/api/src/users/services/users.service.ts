@@ -16,6 +16,12 @@ import {
   type UserDetail,
 } from '../selects/user-details.select';
 import { userSelect, type UserPublic } from '../selects/user-public.select';
+import { UserAuthSelect, userAuthSelect } from '../selects/user-auth.select';
+import {
+  UserAuthenticated,
+  userAuthenticatedSelect,
+} from '../selects/user-authenticated.select';
+import { UserProfile, userProfileSelect } from '../selects/user-profile.select';
 
 @Injectable()
 export class UsersService {
@@ -64,6 +70,22 @@ export class UsersService {
     return user;
   }
 
+  async findAuthUserByEmail(email: string): Promise<UserAuthSelect | null> {
+    return this.prisma.user.findUnique({
+      where: { email },
+      select: userAuthSelect,
+    });
+  }
+
+  async findForAuthenticationById(
+    id: string,
+  ): Promise<UserAuthenticated | null> {
+    return this.prisma.user.findUnique({
+      where: { id },
+      select: userAuthenticatedSelect,
+    });
+  }
+
   async update(id: string, updateUserDto: UpdateUserDto): Promise<UserPublic> {
     await this.findOne(id);
 
@@ -101,20 +123,19 @@ export class UsersService {
     id: string,
     dto: CompleteProfileDto,
   ): Promise<UserPublic> {
-    const city = await this.prisma.city.findFirst({
+    const city = await this.prisma.city.findUnique({
       where: {
-        name: dto.city,
+        id: dto.cityId,
       },
     });
-
     if (!city) {
-      throw new NotFoundException(`City ${dto.city} not found`);
+      throw new NotFoundException(`City ${dto.cityId} not found`);
     }
 
     return this.prisma.user.update({
       where: { id },
       data: {
-        cityId: city.id,
+        cityId: dto.cityId,
         level: dto.level,
         position: dto.position,
         dominantHand: dto.dominantHand,
@@ -130,5 +151,18 @@ export class UsersService {
       },
       select: userSelect,
     });
+  }
+
+  async findProfile(id: string): Promise<UserProfile> {
+    const user = await this.prisma.user.findUnique({
+      where: { id },
+      select: userProfileSelect,
+    });
+
+    if (!user) {
+      throw new NotFoundException(`User with id ${id} not found`);
+    }
+
+    return user;
   }
 }

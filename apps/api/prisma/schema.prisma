@@ -7,6 +7,45 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model City {
+  id       Int    @id @default(autoincrement())
+  name     String
+  province String
+  country  String
+  users    User[]
+
+  @@unique([name, province, country])
+}
+
+model User {
+  id                 String              @id @default(uuid())
+  email              String              @unique
+  password           String
+  level              Int?
+  position           Position?
+  role               UserRole            @default(PLAYER)
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  avatar             String?
+  bio                String?
+  birthDate          DateTime?
+  cityId             Int?
+  dominantHand       DominantHand?
+  emailVerified      Boolean             @default(false)
+  firstName          String
+  instagram          String?
+  isActive           Boolean             @default(true)
+  lastName           String
+  latitude           Float?
+  longitude          Float?
+  phone              String?
+  preferredMatchType PreferredMatchType?
+  profileCompleted   Boolean             @default(false)
+  travelDistanceKm   Int?                @default(20)
+  whatsapp           String?
+  city               City?               @relation(fields: [cityId], references: [id])
+}
+
 enum UserRole {
   PLAYER
   CLUB_ADMIN
@@ -28,71 +67,4 @@ enum PreferredMatchType {
   SOCIAL
   COMPETITIVE
   BOTH
-}
-
-model City {
-  id        Int      @id @default(autoincrement())
-  name      String
-  province  String
-  country   String
-
-  users User[]
-}
-
-model User {
-  id                   String              @id @default(uuid())
-
-  // Datos de autenticación
-  email                String              @unique
-  password             String
-
-  // Datos personales
-  firstName            String
-  lastName             String
-
-  phone                String?
-
-  birthDate            DateTime?
-
-  cityId Int?
-
-  city   City? @relation(fields: [cityId], references: [id])
-
-  avatar               String?
-
-  bio                  String?
-
-  // Perfil de jugador
-  level                Int?
-
-  position             Position?
-
-  dominantHand         DominantHand?
-
-  preferredMatchType   PreferredMatchType?
-
-  // Redes
-  instagram            String?
-
-  whatsapp             String?
-
-  // Ubicación
-  latitude             Float?
-
-  longitude            Float?
-
-  travelDistanceKm     Int?                @default(20)
-
-  // Estado de la cuenta
-  role                 UserRole            @default(PLAYER)
-
-  emailVerified        Boolean             @default(false)
-
-  profileCompleted     Boolean             @default(false)
-
-  isActive             Boolean             @default(true)
-
-  createdAt            DateTime            @default(now())
-
-  updatedAt            DateTime            @updatedAt
 }
