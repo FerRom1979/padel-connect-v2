@@ -1,7 +1,16 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
-import type { AutocompleteProps } from './autocomplete.types';
+import { useState } from 'react';
+import { X } from 'lucide-react';
+import * as Popover from '@radix-ui/react-popover';
+import { Command } from 'cmdk';
+
+import { Input } from '@/components/ui';
+
+import type {
+  AutocompleteOption,
+  AutocompleteProps,
+} from './autocomplete.types';
 
 export function Autocomplete({
   inputValue,
@@ -11,65 +20,118 @@ export function Autocomplete({
   onInputChange,
   onChange,
   onClear,
+  disabled,
+  minChars = 2,
+  error,
 }: AutocompleteProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const containerRef = useRef<HTMLDivElement>(null);
+  const [open, setOpen] = useState(false);
+  const [selectedOption, setSelectedOption] =
+    useState<AutocompleteOption | null>(null);
 
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if (
-        containerRef.current &&
-        !containerRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false);
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside);
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
+  const canSearch = inputValue.trim().length >= minChars;
 
   return (
-    <div ref={containerRef}>
-      <input
-        value={inputValue}
-        placeholder={placeholder}
-        onChange={(event) => {
-          onInputChange(event.target.value);
-          setIsOpen(true);
-        }}
-        onFocus={() => setIsOpen(true)}
-      />
+    <Popover.Root open={open} onOpenChange={setOpen}>
+      <Popover.Anchor asChild>
+        <div className="relative">
+          <Input
+            value={inputValue}
+            placeholder={placeholder}
+            disabled={disabled}
+            onFocus={() => {
+              if (canSearch) {
+                setOpen(true);
+              }
+            }}
+            onChange={(event) => {
+              const value = event.target.value;
 
-      {inputValue && onClear && (
-        <button
-          type="button"
-          onClick={() => {
-            onClear();
-          }}
-        >
-          ✕
-        </button>
-      )}
+              onInputChange(value);
 
-      {isLoading && <div>Buscando...</div>}
+              if (canSearch) {
+                setOpen(true);
+              } else {
+                setOpen(false);
+              }
+            }}
+          />
 
-      {isOpen && inputValue.length >= 2 && (
-        <ul>
-          {options.length > 0 ? (
-            options.map((option) => (
-              <button type="button" onClick={() => onChange(option)}>
-                {option.label}
-              </button>
-            ))
-          ) : (
-            <li>No se encontraron resultados</li>
+          {error && <p className="mt-1 text-sm text-destructive">{error}</p>}
+
+          {inputValue && onClear && !disabled && (
+            <button
+              type="button"
+              onClick={onClear}
+              className="
+                absolute
+                right-3
+                top-1/2
+                -translate-y-1/2
+                text-muted-foreground
+                hover:text-foreground
+              "
+            >
+              <X className="h-4 w-4" />
+            </button>
           )}
-        </ul>
-      )}
-    </div>
+        </div>
+      </Popover.Anchor>
+
+      <Popover.Content
+        align="start"
+        sideOffset={4}
+        onOpenAutoFocus={(event) => event.preventDefault()}
+        onCloseAutoFocus={(event) => event.preventDefault()}
+        className="
+          z-50
+          mt-2
+          w-(--radix-popover-trigger-width)
+          overflow-hidden
+          rounded-xl
+          border
+          border-gray-300
+          bg-white
+          shadow-lg
+        "
+      >
+        {canSearch && (
+          <Command shouldFilter={false} loop={false}>
+            {isLoading && (
+              <div className="px-4 py-3 text-sm text-muted-foreground">
+                Buscando...
+              </div>
+            )}
+
+            {!isLoading && options.length === 0 && (
+              <div className="px-4 py-3 text-sm text-muted-foreground">
+                No se encontraron resultados
+              </div>
+            )}
+
+            {!isLoading &&
+              options.map((option) => (
+                <Command.Item
+                  key={option.id}
+                  value={String(option.id)}
+                  onSelect={() => {
+                    setSelectedOption(option);
+                    onChange(option);
+                    setOpen(false);
+                  }}
+                  className="
+                    cursor-pointer
+                    px-4
+                    py-3
+                    text-sm
+                    hover:bg-accent
+                  "
+                >
+                  {option.label}
+                </Command.Item>
+              ))}
+          </Command>
+        )}
+      </Popover.Content>
+    </Popover.Root>
   );
 }
