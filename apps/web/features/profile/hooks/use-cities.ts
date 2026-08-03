@@ -5,6 +5,7 @@ export function useCities(search: string) {
   return useQuery({
     queryKey: ['cities', search],
     queryFn: () => getCities(search),
-    enabled: search.length >= 2,
+    enabled: search.trim().length >= 2,
+    staleTime: 1000 * 60 * 5,
   });
 }

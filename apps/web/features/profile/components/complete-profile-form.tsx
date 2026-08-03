@@ -1,6 +1,6 @@
 'use client';
 
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import {
@@ -15,11 +15,20 @@ import { Button } from '@/components/ui/button/button';
 import { FormField, Select } from '@/components/ui';
 import { positionOptions } from '../constants/position-options';
 import { levelOptions } from '../constants/level-options';
+import { AuthHeader, AuthLayout } from '@/components/auth';
+import { AuthForm } from '@/components/auth-form/auth-form';
 
 export function CompleteProfileForm() {
   const [citySearch, setCitySearch] = useState('');
 
   const { data: cities = [], isLoading } = useCities(citySearch);
+
+  const citiesOptions = cities.map((city) => ({
+    id: city.id,
+    label: city.name,
+  }));
+
+  const cityOptions = citySearch.length >= 2 ? citiesOptions : [];
 
   const form = useForm<CompleteProfileFormData>({
     resolver: zodResolver(completeProfileSchema),
@@ -29,7 +38,7 @@ export function CompleteProfileForm() {
       position: undefined,
     },
   });
-
+  const { control } = form;
   const { errors } = form.formState;
 
   const router = useRouter();
@@ -45,55 +54,80 @@ export function CompleteProfileForm() {
     });
   };
 
-  const cityOptions = cities.map((city) => ({
-    id: city.id,
-    label: city.name,
-  }));
-
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)}>
-      <Autocomplete
-        inputValue={citySearch}
-        options={cityOptions}
-        isLoading={isLoading}
-        placeholder="Buscar ciudad..."
-        onInputChange={setCitySearch}
-        onChange={(option) => {
-          form.setValue('cityId', option.id);
-          setCitySearch(option.label);
-        }}
-        onClear={() => {
-          form.setValue('cityId', 0);
-          setCitySearch('');
-        }}
+    <AuthLayout>
+      <AuthHeader
+        title="Completa tu perfil"
+        description="Queremos conocerte mejor"
       />
-      {errors.cityId && <span>{errors.cityId?.message}</span>}
-      <FormField
-        label="Posición"
-        htmlFor="position"
-        error={errors.position?.message}
-      >
-        <Select
-          id="position"
-          placeholder="Seleccione una posición"
-          options={positionOptions}
-          {...form.register('position')}
+      <AuthForm onSubmit={form.handleSubmit(onSubmit)}>
+        <Controller
+          name="cityId"
+          control={form.control}
+          render={({ field, fieldState }) => (
+            <Autocomplete
+              inputValue={citySearch}
+
+              options={cityOptions}
+
+              isLoading={isLoading}
+
+              minChars={2}
+
+              placeholder="Buscar ciudad"
+
+              error={fieldState.error?.message}
+
+              onInputChange={setCitySearch}
+
+              onChange={(option) => {
+                field.onChange(option.id);
+                setCitySearch(option.label);
+              }}
+
+              onClear={() => {
+                field.onChange(null);
+                setCitySearch('');
+              }}
+            />
+          )}
         />
-      </FormField>
-      <FormField label="Nivel" htmlFor="level" error={errors.level?.message}>
-        <Select
-          id="level"
-          placeholder="Seleccione un nivel"
-          options={levelOptions}
-          {...form.register('level', {
-            valueAsNumber: true,
-          })}
-        />
-      </FormField>
-      {errors.level?.message && <span>{errors.level?.message}</span>}
-      <Button type="submit" disabled={completeProfile.isPending}>
-        {completeProfile.isPending ? 'Ingresando...' : 'Continuar'}
-      </Button>
-    </form>
+        <FormField
+          label="Posición"
+          htmlFor="position"
+          error={errors.position?.message}
+        >
+          <Controller
+            name="position"
+            control={control}
+            render={({ field }) => (
+              <Select
+                value={field.value}
+                onChange={field.onChange}
+                options={positionOptions}
+                placeholder="Seleccioná posición"
+              />
+            )}
+          />
+        </FormField>
+        <FormField label="Nivel" htmlFor="level" error={errors.level?.message}>
+          <Controller
+            name="level"
+            control={control}
+            render={({ field }) => (
+              <Select
+                value={String(field.value ?? '')}
+                onChange={(value) => field.onChange(Number(value))}
+                options={levelOptions}
+                placeholder="Seleccione un nivel"
+              />
+            )}
+          />
+        </FormField>
+        <Button type="submit" disabled={completeProfile.isPending}>
+          {completeProfile.isPending ? 'Ingresando...' : 'Continuar'}
+        </Button>
+      </AuthForm>
+    </AuthLayout>
   );
 }

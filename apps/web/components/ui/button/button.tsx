@@ -21,9 +21,9 @@ const variants = {
 };
 
 const sizes = {
-  sm: 'px-3 py-1 text-sm',
-  md: 'px-4 py-2',
-  lg: 'px-6 py-3 text-lg',
+  sm: 'h-9 px-3 text-sm',
+  md: 'h-12 px-4 text-sm',
+  lg: 'h-14 px-6 text-base',
 };
 
 export function Button({
@@ -38,9 +38,19 @@ export function Button({
   return (
     <button
       className={cn(
-        'rounded-md font-medium transition disabled:cursor-not-allowed disabled:opacity-50',
+        'inline-flex items-center justify-center h-12',
+        'rounded-xl',
+        'font-medium',
+        'transition-colors',
+        'focus:outline-none',
+        'focus:ring-2 focus:ring-blue-500/20',
+        'disabled:cursor-not-allowed',
+        'disabled:opacity-50',
+
         variants[variant],
+
         sizes[size],
+
         className,
       )}
       disabled={disabled || loading}

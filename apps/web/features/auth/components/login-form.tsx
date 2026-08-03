@@ -9,6 +9,8 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button/button';
 import { Input } from '@/components/ui/input/input';
 import { FormField } from '@/components/ui/form-field/form-field';
+import { AuthHeader, AuthLayout } from '@/components/auth';
+import { AuthForm } from '@/components/auth-form/auth-form';
 
 export function LoginForm() {
   const form = useForm<LoginFormData>({
@@ -34,25 +36,31 @@ export function LoginForm() {
   };
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="ml-4">
-      <FormField label="Email" htmlFor="email" error={errors.email?.message}>
-        <Input
-          id="email"
-          type="email"
-          placeholder="correo@email.com"
-          {...form.register('email')}
-        />
-      </FormField>
-      <FormField
-        label="Contraseña"
-        htmlFor="password"
-        error={errors.password?.message}
-      >
-        <Input id="password" type="password" {...form.register('password')} />
-      </FormField>
-      <Button type="submit" loading={login.isPending}>
-        Ingresar
-      </Button>
-    </form>
+    <AuthLayout>
+      <AuthHeader
+        title="Bienvenido"
+        description="Accede a tu cuenta de Padel Connect."
+      />
+      <AuthForm onSubmit={form.handleSubmit(onSubmit)} className="ml-4">
+        <FormField label="Email" htmlFor="email" error={errors.email?.message}>
+          <Input
+            id="email"
+            type="email"
+            placeholder="correo@email.com"
+            {...form.register('email')}
+          />
+        </FormField>
+        <FormField
+          label="Contraseña"
+          htmlFor="password"
+          error={errors.password?.message}
+        >
+          <Input id="password" type="password" {...form.register('password')} />
+        </FormField>
+        <Button type="submit" loading={login.isPending}>
+          Ingresar
+        </Button>
+      </AuthForm>
+    </AuthLayout>
   );
 }
