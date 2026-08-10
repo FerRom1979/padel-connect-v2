@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { getCurrentUser, login, register } from '../api/auth.api';
-import { setToken } from '../storage/token-storage';
+import { login, register } from '../api/auth.api';
+import { QUERY_KEYS } from '@/constants/query-keys';
 import type { RegisterPayload } from '../types';
 
 export function useRegister() {
@@ -16,12 +16,10 @@ export function useRegister() {
       });
     },
 
-    onSuccess: async (data) => {
-      setToken(data.accessToken);
-
-      const user = await getCurrentUser();
-
-      queryClient.setQueryData(['current-user'], user);
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: QUERY_KEYS.CURRENT_USER,
+      });
     },
   });
 }

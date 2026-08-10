@@ -26,3 +26,7 @@ export async function register(
 
   return data;
 }
+
+export async function logout(): Promise<void> {
+  await api.post('/auth/logout');
+}

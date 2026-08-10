@@ -1,21 +1,20 @@
-import { useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
 
-import { removeToken } from '../storage/token-storage';
+import { logout } from '../api/auth.api';
+import { QUERY_KEYS } from '@/constants/query-keys';
 
 export function useLogout() {
   const queryClient = useQueryClient();
   const router = useRouter();
 
-  function logout() {
-    removeToken();
+  return useMutation({
+    mutationFn: logout,
 
-    queryClient.removeQueries({
-      queryKey: ['current-user'],
-    });
+    onSuccess: () => {
+      queryClient.setQueryData(QUERY_KEYS.CURRENT_USER, null);
 
-    router.replace('/login');
-  }
-
-  return logout;
+      router.replace('/login');
+    },
+  });
 }

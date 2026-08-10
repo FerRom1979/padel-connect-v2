@@ -1,9 +1,5 @@
-import { Button } from '@/components/ui/button/button';
+import { redirect } from 'next/navigation';
 
-export default function Home() {
-  return (
-    <main className="">
-      <Button>Mi botón</Button>
-    </main>
-  );
+export default function HomePage() {
+  redirect('/login');
 }
