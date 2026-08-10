@@ -6,7 +6,7 @@ import type { AuthUser } from '../types';
 import { useAuthReady } from '../hooks/use-auth-ready';
 
 type AuthContextValue = {
-  user: AuthUser | undefined;
+  user: AuthUser | null | undefined;
   isLoading: boolean;
   isAuthenticated: boolean;
   isReady: boolean;
