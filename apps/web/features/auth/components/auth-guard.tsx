@@ -3,6 +3,7 @@
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
+import { LoadingScreen } from '@/components/brand/loading-screen';
 import { useAuth } from '../hooks/use-auth';
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
@@ -32,7 +33,7 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
   }, [user, isLoading, isReady, pathname, router]);
 
   if (!isReady || isLoading) {
-    return <div>Cargando...</div>;
+    return <LoadingScreen />;
   }
 
   if (!user) {

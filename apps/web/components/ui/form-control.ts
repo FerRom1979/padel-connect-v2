@@ -2,13 +2,13 @@ import { cn } from '@/lib/utils';
 
 export const formControlClassName = cn(
   'flex h-12 w-full rounded-xl',
-  'border border-gray-300',
-  'bg-white',
+  'border border-border',
+  'bg-surface',
   'px-4',
   'text-sm',
   'transition-colors',
-  'placeholder:text-gray-400',
+  'placeholder:text-muted',
   'focus:outline-none',
-  'focus:ring-2 focus:ring-blue-500/20',
-  'focus:border-blue-500',
+  'focus:ring-2 focus:ring-primary/40',
+  'focus:border-primary',
 );

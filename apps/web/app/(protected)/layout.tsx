@@ -1,5 +1,5 @@
+import { AppShell } from '@/components/layout/app-shell';
 import { AuthGuard } from '@/features/auth/components/auth-guard';
-import { ProfileCompletionGuard } from '@/features/auth/components/profile-completion-guard';
 
 export default function ProtectedLayout({
   children,
@@ -8,7 +8,7 @@ export default function ProtectedLayout({
 }) {
   return (
     <AuthGuard>
-      <ProfileCompletionGuard>{children}</ProfileCompletionGuard>
+      <AppShell>{children}</AppShell>
     </AuthGuard>
   );
 }

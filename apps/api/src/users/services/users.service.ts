@@ -8,7 +8,8 @@ import { hashPassword } from '../../common/utils/hash-password.util';
 import { PrismaService } from '../../prisma/prisma.service';
 import { CompleteProfileDto } from '../dto/complete-profile.dto';
 import { CreateUserDto } from '../dto/create-user.dto';
-import { UpdateUserDto } from '../dto/update-user.dto';
+import { UserQueryDto } from '../dto/user-query.dto';
+import { PAGE_SIZE } from '../users.constants';
 import { mapCreateUserData } from '../mappers/create-user.mapper';
 import { userListSelect, type UserList } from '../selects/user-list.select';
 import {
@@ -50,11 +51,35 @@ export class UsersService {
     }
   }
 
-  findAll(): Promise<UserList[]> {
-    return this.prisma.user.findMany({
+  async findAll(query: UserQueryDto = {}) {
+    const search = query.q?.trim();
+
+    const users = await this.prisma.user.findMany({
+      where: {
+        isActive: true,
+        // Sin perfil completo no hay nada útil que mostrar de un jugador.
+        profileCompleted: true,
+        cityId: query.cityId,
+        category: query.category,
+        position: query.position,
+        ...(search
+          ? {
+              OR: [
+                { firstName: { contains: search, mode: 'insensitive' } },
+                { lastName: { contains: search, mode: 'insensitive' } },
+              ],
+            }
+          : {}),
+      },
       select: userListSelect,
       orderBy: { createdAt: 'desc' },
+      take: PAGE_SIZE + 1,
     });
+
+    return {
+      items: users.slice(0, PAGE_SIZE),
+      hasMore: users.length > PAGE_SIZE,
+    };
   }
 
   async findOne(id: string): Promise<UserDetail> {
@@ -86,39 +111,6 @@ export class UsersService {
     });
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<UserPublic> {
-    await this.findOne(id);
-
-    const { city, birthDate, ...rest } = updateUserDto;
-    const data: Prisma.UserUncheckedUpdateInput = { ...rest };
-
-    if (birthDate !== undefined) {
-      data.birthDate = new Date(birthDate);
-    }
-
-    if (city !== undefined) {
-      const existingCity = await this.prisma.city.findFirst({
-        where: { name: city },
-      });
-
-      if (!existingCity) {
-        throw new NotFoundException(`City ${city} not found`);
-      }
-
-      data.cityId = existingCity.id;
-    }
-
-    return this.prisma.user.update({
-      where: { id },
-      data,
-      select: userSelect,
-    });
-  }
-
-  remove(id: string) {
-    return `This action removes a #${id} user`;
-  }
-
   async completeProfile(
     id: string,
     dto: CompleteProfileDto,
@@ -136,7 +128,7 @@ export class UsersService {
       where: { id },
       data: {
         cityId: dto.cityId,
-        level: dto.level,
+        category: dto.category,
         position: dto.position,
         dominantHand: dto.dominantHand,
         preferredMatchType: dto.preferredMatchType,

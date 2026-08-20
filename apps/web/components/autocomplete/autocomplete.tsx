@@ -7,12 +7,10 @@ import { Command } from 'cmdk';
 
 import { Input } from '@/components/ui';
 
-import type {
-  AutocompleteOption,
-  AutocompleteProps,
-} from './autocomplete.types';
+import type { AutocompleteProps } from './autocomplete.types';
 
 export function Autocomplete({
+  id,
   inputValue,
   options,
   placeholder,
@@ -25,8 +23,6 @@ export function Autocomplete({
   error,
 }: AutocompleteProps) {
   const [open, setOpen] = useState(false);
-  const [selectedOption, setSelectedOption] =
-    useState<AutocompleteOption | null>(null);
 
   const canSearch = inputValue.trim().length >= minChars;
 
@@ -35,6 +31,7 @@ export function Autocomplete({
       <Popover.Anchor asChild>
         <div className="relative">
           <Input
+            id={id}
             value={inputValue}
             placeholder={placeholder}
             disabled={disabled}
@@ -56,7 +53,7 @@ export function Autocomplete({
             }}
           />
 
-          {error && <p className="mt-1 text-sm text-destructive">{error}</p>}
+          {error && <p className="mt-1 text-sm text-danger">{error}</p>}
 
           {inputValue && onClear && !disabled && (
             <button
@@ -67,7 +64,7 @@ export function Autocomplete({
                 right-3
                 top-1/2
                 -translate-y-1/2
-                text-muted-foreground
+                text-muted
                 hover:text-foreground
               "
             >
@@ -89,21 +86,19 @@ export function Autocomplete({
           overflow-hidden
           rounded-xl
           border
-          border-gray-300
-          bg-white
+          border-border
+          bg-surface
           shadow-lg
         "
       >
         {canSearch && (
           <Command shouldFilter={false} loop={false}>
             {isLoading && (
-              <div className="px-4 py-3 text-sm text-muted-foreground">
-                Buscando...
-              </div>
+              <div className="px-4 py-3 text-sm text-muted">Buscando...</div>
             )}
 
             {!isLoading && options.length === 0 && (
-              <div className="px-4 py-3 text-sm text-muted-foreground">
+              <div className="px-4 py-3 text-sm text-muted">
                 No se encontraron resultados
               </div>
             )}
@@ -114,7 +109,6 @@ export function Autocomplete({
                   key={option.id}
                   value={String(option.id)}
                   onSelect={() => {
-                    setSelectedOption(option);
                     onChange(option);
                     setOpen(false);
                   }}
@@ -123,7 +117,7 @@ export function Autocomplete({
                     px-4
                     py-3
                     text-sm
-                    hover:bg-accent
+                    hover:bg-surface-muted
                   "
                 >
                   {option.label}

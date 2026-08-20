@@ -10,12 +10,37 @@
   --secondary: #2563eb;
 
   --surface: #ffffff;
+  /* Fondos sutiles: hover de nav, fichas de jugador, barra de progreso. */
+  --surface-muted: #f1f5f9;
 
   --border: #e5e7eb;
 
   --muted: #6b7280;
 
   --danger: #ef4444;
+}
+
+/* El tema lo decide el sistema. Sin toggle: nadie lo pidió y agrega estado a persistir. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0d1117;
+    --foreground: #e6edf3;
+
+    /* Verde más claro: el #16a34a sobre fondo oscuro no llega a 4.5:1. */
+    --primary: #2ea043;
+    --primary-hover: #3fb950;
+
+    --secondary: #58a6ff;
+
+    --surface: #161b22;
+    --surface-muted: #21262d;
+
+    --border: #30363d;
+
+    --muted: #8b949e;
+
+    --danger: #f85149;
+  }
 }
 
 @theme inline {
@@ -28,6 +53,7 @@
   --color-secondary: var(--secondary);
 
   --color-surface: var(--surface);
+  --color-surface-muted: var(--surface-muted);
 
   --color-border: var(--border);
 
@@ -36,16 +62,11 @@
   --color-danger: var(--danger);
 
   --font-sans: var(--font-geist-sans);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: ... --surface: ... --border: ...;
-  }
+  --font-display: var(--font-barlow-condensed);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, sans-serif;
 }

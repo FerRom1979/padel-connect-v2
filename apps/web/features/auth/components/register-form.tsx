@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
@@ -7,8 +8,13 @@ import { useRouter } from 'next/navigation';
 import { registerSchema, RegisterFormData } from '../schemas/register.schema';
 
 import { useRegister } from '../hooks/use-register';
-import { Button } from '@/components/ui/button/button';
-import { FormField, Input } from '@/components/ui';
+import {
+  Button,
+  FormError,
+  FormField,
+  Input,
+  PasswordInput,
+} from '@/components/ui';
 import { AuthHeader, AuthLayout } from '@/components/auth';
 import { AuthForm } from '@/components/auth-form/auth-form';
 
@@ -35,15 +41,21 @@ export function RegisterForm() {
 
     register.mutate(payload, {
       onSuccess: () => {
-        router.push('/dashboard');
+        router.push('/complete-profile');
       },
     });
   };
 
   return (
     <AuthLayout>
-      <AuthHeader title="Crear cuenta" description="Comienza a jugar hoy" />
+      <AuthHeader
+        title="Crear cuenta"
+        description="Empezá con tus datos. Después nos contás cómo jugás."
+        step={{ current: 1, total: 2 }}
+      />
       <AuthForm onSubmit={form.handleSubmit(onSubmit)}>
+        <FormError error={register.error} />
+
         <FormField
           label="Nombre"
           htmlFor="firstName"
@@ -51,7 +63,8 @@ export function RegisterForm() {
         >
           <Input
             id="firstName"
-            type="firstName"
+            type="text"
+            autoComplete="given-name"
             placeholder="Nombre"
             {...form.register('firstName')}
           />
@@ -64,7 +77,8 @@ export function RegisterForm() {
         >
           <Input
             id="lastName"
-            type="lastName"
+            type="text"
+            autoComplete="family-name"
             placeholder="Apellido"
             {...form.register('lastName')}
           />
@@ -74,40 +88,51 @@ export function RegisterForm() {
           <Input
             id="email"
             type="email"
+            autoComplete="email"
             placeholder="Email"
             {...form.register('email')}
           />
         </FormField>
 
         <FormField
-          label="Password"
+          label="Contraseña"
           htmlFor="password"
           error={errors?.password?.message}
         >
-          <Input
+          <PasswordInput
             id="password"
-            type="password"
-            placeholder="Password"
+            autoComplete="new-password"
+            placeholder="Mínimo 6 caracteres"
             {...form.register('password')}
           />
         </FormField>
 
         <FormField
-          label="Confirmar password"
+          label="Confirmar contraseña"
           htmlFor="confirmPassword"
           error={errors?.confirmPassword?.message}
         >
-          <Input
+          <PasswordInput
             id="confirmPassword"
-            type="confirmPassword"
-            placeholder="Confirmar password"
+            autoComplete="new-password"
+            placeholder="Repetí tu contraseña"
             {...form.register('confirmPassword')}
           />
         </FormField>
 
-        <Button type="submit" disabled={register.isPending}>
-          {register.isPending ? 'Creando cuenta...' : 'Registrarse'}
+        <Button type="submit" className="w-full" loading={register.isPending}>
+          Registrarse
         </Button>
+
+        <p className="text-center text-sm text-muted">
+          ¿Ya tenés cuenta?{' '}
+          <Link
+            href="/login"
+            className="font-medium text-primary hover:underline"
+          >
+            Iniciá sesión
+          </Link>
+        </p>
       </AuthForm>
     </AuthLayout>
   );

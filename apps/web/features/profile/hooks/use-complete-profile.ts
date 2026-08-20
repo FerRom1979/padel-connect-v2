@@ -11,6 +11,7 @@ export function useCompleteProfile() {
     onSuccess: async () => {
       const user = await getCurrentUser();
       queryClient.setQueryData(QUERY_KEYS.CURRENT_USER, user);
+      await queryClient.invalidateQueries({ queryKey: QUERY_KEYS.PROFILE });
     },
   });
 }

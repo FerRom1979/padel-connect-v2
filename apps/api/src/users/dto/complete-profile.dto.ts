@@ -8,17 +8,20 @@ import {
   Min,
 } from 'class-validator';
 
-import { DominantHand, Position, PreferredMatchType } from '@prisma/client';
+import {
+  DominantHand,
+  PlayerCategory,
+  Position,
+  PreferredMatchType,
+} from '@prisma/client';
 
 export class CompleteProfileDto {
   @IsInt()
   cityId: number;
 
   @IsOptional()
-  @IsInt()
-  @Min(1)
-  @Max(10)
-  level?: number;
+  @IsEnum(PlayerCategory)
+  category?: PlayerCategory;
 
   @IsOptional()
   @IsEnum(Position)

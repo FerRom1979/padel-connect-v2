@@ -59,9 +59,9 @@ export function Select({
             overflow-hidden
             rounded-md
             border
-            border-gray-300
+            border-border
             shadow-lg
-            bg-white
+            bg-surface
             mt-2
           "
         >
@@ -82,8 +82,8 @@ export function Select({
                   pl-9
                   text-sm
                   outline-none
-                  hover:bg-accent
-                  focus:bg-accent
+                  hover:bg-surface-muted
+                  focus:bg-surface-muted
                   data-disabled:pointer-events-none
                   data-disabled:opacity-50
               

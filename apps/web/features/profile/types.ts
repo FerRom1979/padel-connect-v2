@@ -1,6 +1,8 @@
+import type { PlayerCategory } from './constants/category-options';
+
 export interface CompleteProfilePayload {
   cityId: number;
-  level: number;
+  category: PlayerCategory;
   position: 'DRIVE' | 'REVES' | 'BOTH';
 
   dominantHand?: 'RIGHT' | 'LEFT';
@@ -16,6 +18,21 @@ export interface CompleteProfilePayload {
   longitude?: number;
 
   travelDistanceKm?: number;
+}
+
+export interface Profile {
+  id: string;
+  email: string;
+  firstName: string;
+  lastName: string;
+  bio: string | null;
+  avatar: string | null;
+  category: PlayerCategory | null;
+  position: 'DRIVE' | 'REVES' | 'BOTH' | null;
+  dominantHand: 'RIGHT' | 'LEFT' | null;
+  preferredMatchType: 'SOCIAL' | 'COMPETITIVE' | 'BOTH' | null;
+  profileCompleted: boolean;
+  city: { id: number; name: string; province: string } | null;
 }
 
 export interface City {

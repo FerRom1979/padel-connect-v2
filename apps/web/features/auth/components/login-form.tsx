@@ -1,14 +1,19 @@
 'use client';
 
+import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { loginSchema, LoginFormData } from '../schemas/login.schema';
 import { useLogin } from '../hooks/use-login';
 import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button/button';
-import { Input } from '@/components/ui/input/input';
-import { FormField } from '@/components/ui/form-field/form-field';
+import {
+  Button,
+  FormError,
+  FormField,
+  Input,
+  PasswordInput,
+} from '@/components/ui';
 import { AuthHeader, AuthLayout } from '@/components/auth';
 import { AuthForm } from '@/components/auth-form/auth-form';
 
@@ -41,11 +46,14 @@ export function LoginForm() {
         title="Bienvenido"
         description="Accede a tu cuenta de Padel Connect."
       />
-      <AuthForm onSubmit={form.handleSubmit(onSubmit)} className="ml-4">
+      <AuthForm onSubmit={form.handleSubmit(onSubmit)}>
+        <FormError error={login.error} />
+
         <FormField label="Email" htmlFor="email" error={errors.email?.message}>
           <Input
             id="email"
             type="email"
+            autoComplete="email"
             placeholder="correo@email.com"
             {...form.register('email')}
           />
@@ -55,11 +63,25 @@ export function LoginForm() {
           htmlFor="password"
           error={errors.password?.message}
         >
-          <Input id="password" type="password" {...form.register('password')} />
+          <PasswordInput
+            id="password"
+            autoComplete="current-password"
+            {...form.register('password')}
+          />
         </FormField>
-        <Button type="submit" loading={login.isPending}>
+        <Button type="submit" className="w-full" loading={login.isPending}>
           Ingresar
         </Button>
+
+        <p className="text-center text-sm text-muted">
+          ¿No tenés cuenta?{' '}
+          <Link
+            href="/register"
+            className="font-medium text-primary hover:underline"
+          >
+            Creá una
+          </Link>
+        </p>
       </AuthForm>
     </AuthLayout>
   );
