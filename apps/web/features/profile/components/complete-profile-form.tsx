@@ -8,33 +8,20 @@ import {
   completeProfileSchema,
 } from '../schemas/complete-profile.schema';
 import { useCompleteProfile } from '../hooks/use-complete-profile';
-import { useState } from 'react';
-import { useCities } from '../hooks/use-cities';
-import { Autocomplete } from '@/components/autocomplete/autocomplete';
 import { Button } from '@/components/ui/button/button';
-import { FormField, Select } from '@/components/ui';
-import { positionOptions } from '../constants/position-options';
-import { levelOptions } from '../constants/level-options';
+import { FormError, FormField, Select } from '@/components/ui';
+import { positionOptions } from '../constants/player-options';
+import { CityField } from './city-field';
+import { categoryOptions } from '../constants/category-options';
 import { AuthHeader, AuthLayout } from '@/components/auth';
 import { AuthForm } from '@/components/auth-form/auth-form';
 
 export function CompleteProfileForm() {
-  const [citySearch, setCitySearch] = useState('');
-
-  const { data: cities = [], isLoading } = useCities(citySearch);
-
-  const citiesOptions = cities.map((city) => ({
-    id: city.id,
-    label: city.name,
-  }));
-
-  const cityOptions = citySearch.length >= 2 ? citiesOptions : [];
-
   const form = useForm<CompleteProfileFormData>({
     resolver: zodResolver(completeProfileSchema),
     defaultValues: {
       cityId: undefined,
-      level: undefined,
+      category: undefined,
       position: undefined,
     },
   });
@@ -46,7 +33,6 @@ export function CompleteProfileForm() {
   const completeProfile = useCompleteProfile();
 
   const onSubmit = (data: CompleteProfileFormData) => {
-    console.log({ data });
     completeProfile.mutate(data, {
       onSuccess: () => {
         router.push('/dashboard');
@@ -57,38 +43,21 @@ export function CompleteProfileForm() {
   return (
     <AuthLayout>
       <AuthHeader
-        title="Completa tu perfil"
-        description="Queremos conocerte mejor"
+        title="Cómo jugás"
+        description="Con esto te emparejamos con jugadores de tu nivel y zona."
+        step={{ current: 2, total: 2 }}
       />
       <AuthForm onSubmit={form.handleSubmit(onSubmit)}>
+        <FormError error={completeProfile.error} />
+
         <Controller
           name="cityId"
-          control={form.control}
+          control={control}
           render={({ field, fieldState }) => (
-            <Autocomplete
-              inputValue={citySearch}
-
-              options={cityOptions}
-
-              isLoading={isLoading}
-
-              minChars={2}
-
-              placeholder="Buscar ciudad"
-
+            <CityField
+              value={field.value}
+              onChange={field.onChange}
               error={fieldState.error?.message}
-
-              onInputChange={setCitySearch}
-
-              onChange={(option) => {
-                field.onChange(option.id);
-                setCitySearch(option.label);
-              }}
-
-              onClear={() => {
-                field.onChange(null);
-                setCitySearch('');
-              }}
             />
           )}
         />
@@ -110,22 +79,30 @@ export function CompleteProfileForm() {
             )}
           />
         </FormField>
-        <FormField label="Nivel" htmlFor="level" error={errors.level?.message}>
+        <FormField
+          label="Categoría"
+          htmlFor="category"
+          error={errors.category?.message}
+        >
           <Controller
-            name="level"
+            name="category"
             control={control}
             render={({ field }) => (
               <Select
-                value={String(field.value ?? '')}
-                onChange={(value) => field.onChange(Number(value))}
-                options={levelOptions}
-                placeholder="Seleccione un nivel"
+                value={field.value}
+                onChange={field.onChange}
+                options={categoryOptions}
+                placeholder="Elegí tu categoría"
               />
             )}
           />
         </FormField>
-        <Button type="submit" disabled={completeProfile.isPending}>
-          {completeProfile.isPending ? 'Ingresando...' : 'Continuar'}
+        <Button
+          type="submit"
+          className="w-full"
+          loading={completeProfile.isPending}
+        >
+          Continuar
         </Button>
       </AuthForm>
     </AuthLayout>

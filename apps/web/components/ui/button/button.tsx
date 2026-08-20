@@ -14,10 +14,11 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 const variants = {
-  primary: 'bg-blue-600 text-white hover:bg-blue-700',
-  secondary: 'bg-gray-200 text-gray-900 hover:bg-gray-300',
-  danger: 'bg-red-600 text-white hover:bg-red-700',
-  ghost: 'hover:bg-gray-100',
+  primary: 'bg-primary text-white hover:bg-primary-hover',
+  secondary:
+    'border border-border bg-surface text-foreground hover:bg-surface-muted',
+  danger: 'bg-danger text-white hover:bg-danger/90',
+  ghost: 'hover:bg-surface-muted',
 };
 
 const sizes = {
@@ -38,12 +39,12 @@ export function Button({
   return (
     <button
       className={cn(
-        'inline-flex items-center justify-center h-12',
+        'inline-flex items-center justify-center',
         'rounded-xl',
         'font-medium',
         'transition-colors',
         'focus:outline-none',
-        'focus:ring-2 focus:ring-blue-500/20',
+        'focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
         'disabled:cursor-not-allowed',
         'disabled:opacity-50',
 

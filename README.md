@@ -43,24 +43,54 @@ padel-connect/
 
 ## ✅ Current Features
 
-### User Management
+### Authentication
 
-- Create player accounts
-- Secure password hashing
-- Player profile completion
-- Player information:
+- Cookie-based sessions (httpOnly JWT)
+- Register, login, logout
+- Route guards: unauthenticated, onboarding, and authenticated areas
 
-  - Playing level
-  - Position (Drive / Reves / Both)
-  - Dominant hand
-  - Preferred match type
-  - Location
-  - Player preferences
+### Players
+
+- Player profile with city, position, dominant hand and preferred match type
+- **Categories follow the Argentine system**: `C1`–`C8` for men, `D1`–`D7` for women.
+  Careful with the order: the _lower_ the number, the _better_ the player
+  (C1 is professional, C8 a beginner)
+- Editable profile at `/profile`
+- Public player view hides contact details (email, phone, WhatsApp, Instagram)
+
+### Matches
+
+- Create a match: venue, city, date, duration, accepted categories, notes
+- Padel is 2v2, so every match has exactly 4 slots and the organiser takes one
+- Join / leave; only the organiser can edit or cancel, and cancelling asks for confirmation
+- Concurrent joins are serialised, so the last slot never gets double-booked
+- Browse upcoming matches grouped by day, filter by free slots, or look at played ones
+- Shareable URL per match
+
+### Clubs
+
+- Community-filled directory: any player can add the club they play at
+- Unique per name and city, so the same club is not loaded twice
+- A club page lists the upcoming matches and tournaments held there
+
+### Tournaments
+
+- Publish a tournament: venue, dates, accepted categories, team cap, entry fee
+- **Registration is per player, and the partner is free text**: requiring the
+  partner to already have an account would leave out half the sign-ups
+- Only the organiser can edit or cancel; the cap can never drop below the
+  teams already registered
+
+### Venues
+
+- A match or tournament is either at a loaded `Club` or at a free-text place.
+  One field covers both. When a club is picked, its name and city win — otherwise
+  nothing would stop a club from Lomas showing up in the Avellaneda listing.
 
 ### Location Management
 
-- City database
-- Player location relationship
+- City database with autocomplete
+- Player and match location relationship
 
 ### Backend API
 
@@ -69,6 +99,19 @@ padel-connect/
 - Swagger documentation
 - DTO validation
 - Clean architecture structure
+
+### Frontend
+
+- Next.js App Router with route groups per access level
+- Responsive shell: sidebar on desktop, bottom tab bar on mobile
+- Light and dark theme, following the system preference
+
+## 📐 Design Decisions
+
+[`docs/DECISIONES.md`](docs/DECISIONES.md) explains _why_ the code looks the way
+it does — the modelling calls, the trade-offs that were taken on purpose, and
+what has not been verified yet. Read it before changing the category system,
+the venue handling or the route groups.
 
 ## 🛠️ Getting Started
 
@@ -109,15 +152,18 @@ apps/api
 Example:
 
 ```env
-DATABASE_URL="postgresql://user:password@localhost:5432/padel_connect"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/padel_connect"
+JWT_SECRET="change-me-in-development"
+JWT_EXPIRES_IN="7d"
 ```
 
-Run Prisma migrations:
+Run Prisma migrations and seed the cities:
 
 ```bash
 cd apps/api
 
 pnpm prisma migrate dev
+pnpm prisma db seed
 ```
 
 Start the backend:
@@ -126,29 +172,46 @@ Start the backend:
 pnpm start:dev
 ```
 
+Start the frontend (from `apps/web`, needs `NEXT_PUBLIC_API_URL`):
+
+```bash
+pnpm dev
+```
+
+Create `apps/web/.env.local`:
+
+```
+NEXT_PUBLIC_API_URL="http://localhost:3001"
+```
+
 ## 📚 API Documentation
 
 Swagger documentation is available at:
 
 ```
-http://localhost:3000/docs
+http://localhost:3001/docs
 ```
 
 ## 🗺️ Roadmap
 
 ### Authentication
 
-- JWT authentication
-- Login system
+- Password reset
+- Email verification
 - Refresh tokens
 - Role-based access
 
 ### Players
 
-- Search players nearby
-- Create matches
-- Find missing players
 - Player ratings
+- Sorting by proximity (`latitude` / `longitude` / `travelDistanceKm` exist on
+  `User` but nothing uses them yet)
+
+### Everywhere
+
+- Pagination. Lists are capped at 50 rows and warn when results are cut off,
+  but there is no way to page past that yet
+- Notifications when a match or tournament you joined gets cancelled
 
 ### Clubs
 

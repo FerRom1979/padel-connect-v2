@@ -4,6 +4,8 @@ export interface AutocompleteOption {
 }
 
 export interface AutocompleteProps {
+  id?: string;
+
   inputValue: string;
 
   options: AutocompleteOption[];

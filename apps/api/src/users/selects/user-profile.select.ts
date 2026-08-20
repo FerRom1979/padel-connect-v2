@@ -14,7 +14,7 @@ export const userProfileSelect = {
   avatar: true,
   bio: true,
 
-  level: true,
+  category: true,
   position: true,
   dominantHand: true,
   preferredMatchType: true,

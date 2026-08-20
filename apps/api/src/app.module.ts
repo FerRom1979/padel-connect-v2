@@ -7,6 +7,9 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { jwtConfig } from './config';
 import { CitiesModule } from './cities/cities.module';
+import { MatchesModule } from './matches/matches.module';
+import { ClubsModule } from './clubs/clubs.module';
+import { TournamentsModule } from './tournaments/tournaments.module';
 
 @Module({
   imports: [
@@ -15,6 +18,9 @@ import { CitiesModule } from './cities/cities.module';
     UsersModule,
     AuthModule,
     CitiesModule,
+    MatchesModule,
+    ClubsModule,
+    TournamentsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

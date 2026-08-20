@@ -1,7 +1,8 @@
 'use client';
 
-import { Card } from '@/components/ui';
 import type { ReactNode } from 'react';
+
+import { cn } from '@/lib/utils';
 
 interface ActionCardProps {
   icon: ReactNode;
@@ -17,24 +18,25 @@ export function ActionCard({
   onClick,
 }: ActionCardProps) {
   return (
-    <Card
+    <button
+      type="button"
       onClick={onClick}
-      className="
-        cursor-pointer
-        transition-all
-        hover:shadow-md
-        hover:-translate-y-1
-      "
+      className={cn(
+        'flex flex-col gap-4 rounded-xl border border-border bg-surface p-6 text-left',
+        'transition-all hover:-translate-y-1 hover:border-primary/40 hover:shadow-md',
+        'motion-reduce:transition-none motion-reduce:hover:translate-y-0',
+        'focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
+      )}
     >
-      <div className="flex flex-col gap-4">
-        <div className="text-3xl">{icon}</div>
+      <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-primary/10 text-primary">
+        {icon}
+      </span>
 
-        <div>
-          <h3 className="font-semibold">{title}</h3>
+      <span>
+        <span className="block font-semibold">{title}</span>
 
-          <p className="mt-1 text-sm text-gray-500">{description}</p>
-        </div>
-      </div>
-    </Card>
+        <span className="mt-1 block text-sm text-muted">{description}</span>
+      </span>
+    </button>
   );
 }

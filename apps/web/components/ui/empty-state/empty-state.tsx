@@ -1,6 +1,7 @@
 'use client';
 
-import { Button } from '@/components/ui';
+import { Court } from '@/components/brand/court';
+import { Button } from '@/components/ui/button';
 import { cn } from '@/lib/utils';
 
 type EmptyStateProps = {
@@ -22,16 +23,20 @@ export function EmptyState({
     <div
       className={cn(
         'flex flex-col items-center justify-center',
-        'rounded-xl border border-dashed border-gray-300',
-        'bg-white',
-        'p-8',
+        'rounded-xl border border-dashed border-border',
+        'bg-surface',
+        'px-6 py-12',
         'text-center',
         className,
       )}
     >
-      <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
+      {/* Una cancha vacía dice "acá todavía no hay nada". Arriba del texto, no
+          detrás: como marca de agua tapaba el título. */}
+      <Court className="w-16 text-border" />
 
-      <p className="mt-2 max-w-sm text-sm text-gray-500">{description}</p>
+      <h3 className="mt-5 text-lg font-semibold">{title}</h3>
+
+      <p className="mt-2 max-w-sm text-sm text-muted">{description}</p>
 
       {actionLabel && onAction && (
         <Button className="mt-6" onClick={onAction}>

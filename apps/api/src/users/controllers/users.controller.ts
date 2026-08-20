@@ -5,13 +5,13 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { UsersService } from '../services/users.service';
 import { CompleteProfileDto } from '../dto/complete-profile.dto';
 import { CreateUserDto } from '../dto/create-user.dto';
-import { UpdateUserDto } from '../dto/update-user.dto';
+import { UserQueryDto } from '../dto/user-query.dto';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import type { UserAuthenticated } from '../selects/user-authenticated.select';
 import { CurrentUser } from '../../auth/decorators/current-user.decorator';
@@ -27,8 +27,10 @@ export class UsersController {
   }
 
   @Get()
-  findAll() {
-    return this.usersService.findAll();
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  findAll(@Query() query: UserQueryDto) {
+    return this.usersService.findAll(query);
   }
   @Get('me')
   @UseGuards(JwtAuthGuard)
@@ -38,6 +40,8 @@ export class UsersController {
   }
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
   findOne(@Param('id') id: string) {
     return this.usersService.findOne(id);
   }
@@ -50,15 +54,5 @@ export class UsersController {
     @Body() dto: CompleteProfileDto,
   ) {
     return this.usersService.completeProfile(user.id, dto);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(id, updateUserDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(id);
   }
 }

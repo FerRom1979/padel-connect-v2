@@ -5,10 +5,14 @@ export const userListSelect = {
   firstName: true,
   lastName: true,
   avatar: true,
-  level: true,
+  category: true,
+  position: true,
+  bio: true,
   city: {
     select: {
+      id: true,
       name: true,
+      province: true,
     },
   },
 } satisfies Prisma.UserSelect;

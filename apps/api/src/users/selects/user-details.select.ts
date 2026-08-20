@@ -1,20 +1,20 @@
 import { Prisma } from '@prisma/client';
 
+/**
+ * Lo que ve un jugador sobre otro. Sin email, teléfono, whatsapp ni instagram:
+ * el contacto es dato personal y todavía no hay forma de que cada uno elija
+ * qué comparte. Para tus propios datos está `userProfileSelect` en /users/me.
+ */
 export const userDetailSelect = {
   id: true,
   firstName: true,
   lastName: true,
-  phone: true,
   bio: true,
-  level: true,
+  category: true,
   position: true,
   dominantHand: true,
   preferredMatchType: true,
-  instagram: true,
-  whatsapp: true,
   avatar: true,
-  email: true,
-  role: true,
   city: {
     select: {
       id: true,
