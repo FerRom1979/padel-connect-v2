@@ -125,7 +125,7 @@ export function CompleteProfileForm() {
           />
         </FormField>
         <Button type="submit" disabled={completeProfile.isPending}>
-          {completeProfile.isPending ? 'Ingresando...' : 'Continuar'}
+          {completeProfile.isPending ? 'Guardando...' : 'Continuar'}
         </Button>
       </AuthForm>
     </AuthLayout>

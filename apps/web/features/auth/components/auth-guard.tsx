@@ -1,14 +1,12 @@
 'use client';
 
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 import { useAuth } from '../hooks/use-auth';
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-
-  const pathname = usePathname();
 
   const { user, isLoading, isReady } = useAuth();
 
@@ -19,23 +17,14 @@ export function AuthGuard({ children }: { children: React.ReactNode }) {
 
     if (!user) {
       router.replace('/login');
-      return;
     }
-
-    if (!user.profileCompleted && pathname !== '/complete-profile') {
-      router.replace('/complete-profile');
-    }
-
-    if (user.profileCompleted && pathname === '/complete-profile') {
-      router.replace('/dashboard');
-    }
-  }, [user, isLoading, isReady, pathname, router]);
+  }, [user, isLoading, isReady, router]);
 
   if (!isReady || isLoading) {
     return <div>Cargando...</div>;
   }
-
-  if (!user) {
+  console.log({ user, isLoading, isReady });
+  if (user === null) {
     return null;
   }
 
