@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button/button';
 import { FormField, Input } from '@/components/ui';
 import { AuthHeader, AuthLayout } from '@/components/auth';
 import { AuthForm } from '@/components/auth-form/auth-form';
+import Link from 'next/link';
 
 export function RegisterForm() {
   const form = useForm<RegisterFormData>({
@@ -46,12 +47,12 @@ export function RegisterForm() {
       <AuthForm onSubmit={form.handleSubmit(onSubmit)}>
         <FormField
           label="Nombre"
-          htmlFor="firstName"
+          htmlFor="text"
           error={errors?.firstName?.message}
         >
           <Input
             id="firstName"
-            type="firstName"
+            type="text"
             placeholder="Nombre"
             {...form.register('firstName')}
           />
@@ -59,12 +60,12 @@ export function RegisterForm() {
 
         <FormField
           label="Apellido"
-          htmlFor="lastName"
+          htmlFor="text"
           error={errors?.lastName?.message}
         >
           <Input
             id="lastName"
-            type="lastName"
+            type="text"
             placeholder="Apellido"
             {...form.register('lastName')}
           />
@@ -94,20 +95,35 @@ export function RegisterForm() {
 
         <FormField
           label="Confirmar password"
-          htmlFor="confirmPassword"
+          htmlFor="password"
           error={errors?.confirmPassword?.message}
         >
           <Input
             id="confirmPassword"
-            type="confirmPassword"
+            type="password"
             placeholder="Confirmar password"
             {...form.register('confirmPassword')}
           />
         </FormField>
 
-        <Button type="submit" disabled={register.isPending}>
-          {register.isPending ? 'Creando cuenta...' : 'Registrarse'}
+        <Button
+          type="submit"
+          disabled={register.isPending || form.formState.isSubmitting}
+          className="w-full"
+        >
+          {register.isPending || form.formState.isSubmitting
+            ? 'Creando cuenta...'
+            : 'Registrarse'}
         </Button>
+        <div className="text-center text-sm text-slate-600">
+          ¿Ya tienes una cuenta?{' '}
+          <Link
+            href="/login"
+            className="font-medium text-blue-600 hover:text-blue-700"
+          >
+            Iniciar sesión
+          </Link>
+        </div>
       </AuthForm>
     </AuthLayout>
   );

@@ -6,6 +6,7 @@ import type {
   RegisterPayload,
   RegisterResponse,
 } from '../types';
+import axios from 'axios';
 
 export async function login(payload: LoginPayload): Promise<LoginResponse> {
   const { data } = await api.post<LoginResponse>('/auth/login', payload);
@@ -13,10 +14,18 @@ export async function login(payload: LoginPayload): Promise<LoginResponse> {
   return data;
 }
 
-export async function getCurrentUser(): Promise<AuthUser> {
-  const { data } = await api.get<AuthUser>('/auth/me');
+export async function getCurrentUser(): Promise<AuthUser | null> {
+  try {
+    const { data } = await api.get<AuthUser>('/auth/me');
 
-  return data;
+    return data;
+  } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 401) {
+      return null;
+    }
+
+    throw error;
+  }
 }
 
 export async function register(

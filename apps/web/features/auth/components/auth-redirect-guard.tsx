@@ -1,13 +1,12 @@
 'use client';
 
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
 import { useAuth } from '../hooks/use-auth';
 
 export function AuthRedirectGuard({ children }: { children: React.ReactNode }) {
   const router = useRouter();
-  const pathname = usePathname();
 
   const { user, isLoading, isReady } = useAuth();
 
@@ -19,7 +18,7 @@ export function AuthRedirectGuard({ children }: { children: React.ReactNode }) {
     if (user) {
       router.replace('/dashboard');
     }
-  }, [user, isLoading, isReady, pathname, router]);
+  }, [user, isLoading, isReady, router]);
 
   if (!isReady || isLoading) {
     return <div>Cargando...</div>;

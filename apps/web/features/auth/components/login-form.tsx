@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input/input';
 import { FormField } from '@/components/ui/form-field/form-field';
 import { AuthHeader, AuthLayout } from '@/components/auth';
 import { AuthForm } from '@/components/auth-form/auth-form';
+import Link from 'next/link';
 
 export function LoginForm() {
   const form = useForm<LoginFormData>({
@@ -57,9 +58,18 @@ export function LoginForm() {
         >
           <Input id="password" type="password" {...form.register('password')} />
         </FormField>
-        <Button type="submit" loading={login.isPending}>
+        <Button type="submit" loading={login.isPending} className="w-full">
           Ingresar
         </Button>
+        <div className="text-center text-sm text-slate-600">
+          ¿No tienes una cuenta?{' '}
+          <Link
+            href="/register"
+            className="font-medium text-blue-600 hover:text-blue-700"
+          >
+            Crear cuenta
+          </Link>
+        </div>
       </AuthForm>
     </AuthLayout>
   );
